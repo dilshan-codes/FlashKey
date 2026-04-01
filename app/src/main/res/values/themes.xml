@@ -1,12 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.FlashKey" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
     <style name="Theme.FlashKey" parent="Base.Theme.FlashKey" />
 
+    <!-- Letter keys — q w e r t y etc -->
     <style name="KeyStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -19,14 +18,28 @@
         <item name="android:elevation">4dp</item>
     </style>
 
+    <!-- Number keys — 1 2 3 4 5 6 7 8 9 0 @ -->
     <style name="NumberKeyStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">46dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:background">@drawable/key_background_number</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <!-- Action keys — SHF DEL SYM ENT SPACE , . -->
+    <style name="ActionKeyStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1.5</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:background">@drawable/key_background_action</item>
         <item name="android:layout_margin">3dp</item>
         <item name="android:elevation">4dp</item>
     </style>
