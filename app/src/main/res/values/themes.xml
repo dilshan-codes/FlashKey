@@ -10,12 +10,25 @@
     <style name="KeyStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:background">@drawable/key_background</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="NumberKeyStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">46dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:background">#808080</item>
-        <item name="android:layout_margin">2dp</item>
+        <item name="android:background">@drawable/key_background_number</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
 </resources>

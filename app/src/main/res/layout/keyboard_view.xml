@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#222222"
+    android:background="#1a1a1a"
     android:padding="4dp">
 
     <!-- Row 0: Numbers -->
@@ -12,16 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp">
-        <TextView android:id="@+id/key1" style="@style/KeyStyle" android:text="1"/>
-        <TextView android:id="@+id/key2" style="@style/KeyStyle" android:text="2"/>
-        <TextView android:id="@+id/key3" style="@style/KeyStyle" android:text="3"/>
-        <TextView android:id="@+id/key4" style="@style/KeyStyle" android:text="4"/>
-        <TextView android:id="@+id/key5" style="@style/KeyStyle" android:text="5"/>
-        <TextView android:id="@+id/key6" style="@style/KeyStyle" android:text="6"/>
-        <TextView android:id="@+id/key7" style="@style/KeyStyle" android:text="7"/>
-        <TextView android:id="@+id/key8" style="@style/KeyStyle" android:text="8"/>
-        <TextView android:id="@+id/key9" style="@style/KeyStyle" android:text="9"/>
-        <TextView android:id="@+id/key0" style="@style/KeyStyle" android:text="0"/>
+        <TextView android:id="@+id/key1" style="@style/NumberKeyStyle" android:text="1"/>
+        <TextView android:id="@+id/key2" style="@style/NumberKeyStyle" android:text="2"/>
+        <TextView android:id="@+id/key3" style="@style/NumberKeyStyle" android:text="3"/>
+        <TextView android:id="@+id/key4" style="@style/NumberKeyStyle" android:text="4"/>
+        <TextView android:id="@+id/key5" style="@style/NumberKeyStyle" android:text="5"/>
+        <TextView android:id="@+id/key6" style="@style/NumberKeyStyle" android:text="6"/>
+        <TextView android:id="@+id/key7" style="@style/NumberKeyStyle" android:text="7"/>
+        <TextView android:id="@+id/key8" style="@style/NumberKeyStyle" android:text="8"/>
+        <TextView android:id="@+id/key9" style="@style/NumberKeyStyle" android:text="9"/>
+        <TextView android:id="@+id/key0" style="@style/NumberKeyStyle" android:text="0"/>
     </LinearLayout>
 
     <!-- Row 1: Q W E R T Y U I O P -->
@@ -76,12 +76,22 @@
         <TextView android:id="@+id/keyDel" style="@style/KeyStyle" android:text="DEL"/>
     </LinearLayout>
 
-    <!-- Row 4: SPACE -->
+    <!-- Row 4: SPACE and ENTER -->
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView android:id="@+id/keySpace" style="@style/KeyStyle" android:text="SPACE"/>
+
+        <TextView android:id="@+id/keySpace"
+            style="@style/KeyStyle"
+            android:layout_weight="3"
+            android:text="SPACE"/>
+
+        <TextView android:id="@+id/keyEnter"
+            style="@style/KeyStyle"
+            android:layout_weight="1"
+            android:text="↵"/>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import android.view.inputmethod.EditorInfo
 
 // InputMethodService is Android's built-in keyboard base class.
 // By extending it, Android knows this class IS a keyboard.
@@ -139,6 +140,36 @@ class FlashKeyService : InputMethodService() {
                 MotionEvent.ACTION_DOWN -> {
                     flashKey(view)
                     currentInputConnection?.commitText(" ", 1)
+                }
+            }
+            true
+        }
+
+        // ENTER key — reads the app's IME action and performs it
+        val enterKey = keyboardView.findViewById<TextView>(R.id.keyEnter)
+
+// read what action the current app wants
+        val imeAction = currentInputEditorInfo?.imeOptions?.and(EditorInfo.IME_MASK_ACTION)
+
+// set the label based on what the app needs
+        val enterLabel = when (imeAction) {
+            EditorInfo.IME_ACTION_SEARCH -> "🔍"
+            EditorInfo.IME_ACTION_SEND -> "Send"
+            EditorInfo.IME_ACTION_DONE -> "Done"
+            EditorInfo.IME_ACTION_NEXT -> "Next"
+            EditorInfo.IME_ACTION_GO -> "Go"
+            else -> "↵"
+        }
+        enterKey.text = enterLabel
+
+        enterKey.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    flashKey(view)
+                    // perform whatever action the app requested
+                    currentInputConnection?.performEditorAction(
+                        imeAction ?: EditorInfo.IME_ACTION_UNSPECIFIED
+                    )
                 }
             }
             true
