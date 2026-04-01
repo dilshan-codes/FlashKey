@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#222222"
+    android:padding="4dp">
+
+    <!-- Row 1: Q W E R T Y U I O P -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
+
+        <TextView android:id="@+id/keyQ" style="@style/KeyStyle" android:text="Q"/>
+        <TextView android:id="@+id/keyW" style="@style/KeyStyle" android:text="W"/>
+        <TextView android:id="@+id/keyE" style="@style/KeyStyle" android:text="E"/>
+        <TextView android:id="@+id/keyR" style="@style/KeyStyle" android:text="R"/>
+        <TextView android:id="@+id/keyT" style="@style/KeyStyle" android:text="T"/>
+        <TextView android:id="@+id/keyY" style="@style/KeyStyle" android:text="Y"/>
+        <TextView android:id="@+id/keyU" style="@style/KeyStyle" android:text="U"/>
+        <TextView android:id="@+id/keyI" style="@style/KeyStyle" android:text="I"/>
+        <TextView android:id="@+id/keyO" style="@style/KeyStyle" android:text="O"/>
+        <TextView android:id="@+id/keyP" style="@style/KeyStyle" android:text="P"/>
+
+    </LinearLayout>
+
+    <!-- Row 2: A S D F G H J K L -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
+
+        <TextView android:id="@+id/keyA" style="@style/KeyStyle" android:text="A"/>
+        <TextView android:id="@+id/keyS" style="@style/KeyStyle" android:text="S"/>
+        <TextView android:id="@+id/keyD" style="@style/KeyStyle" android:text="D"/>
+        <TextView android:id="@+id/keyF" style="@style/KeyStyle" android:text="F"/>
+        <TextView android:id="@+id/keyG" style="@style/KeyStyle" android:text="G"/>
+        <TextView android:id="@+id/keyH" style="@style/KeyStyle" android:text="H"/>
+        <TextView android:id="@+id/keyJ" style="@style/KeyStyle" android:text="J"/>
+        <TextView android:id="@+id/keyK" style="@style/KeyStyle" android:text="K"/>
+        <TextView android:id="@+id/keyL" style="@style/KeyStyle" android:text="L"/>
+
+    </LinearLayout>
+
+    <!-- Row 3: Z X C V B N M DEL -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
+
+        <TextView android:id="@+id/keyZ" style="@style/KeyStyle" android:text="Z"/>
+        <TextView android:id="@+id/keyX" style="@style/KeyStyle" android:text="X"/>
+        <TextView android:id="@+id/keyC" style="@style/KeyStyle" android:text="C"/>
+        <TextView android:id="@+id/keyV" style="@style/KeyStyle" android:text="V"/>
+        <TextView android:id="@+id/keyB" style="@style/KeyStyle" android:text="B"/>
+        <TextView android:id="@+id/keyN" style="@style/KeyStyle" android:text="N"/>
+        <TextView android:id="@+id/keyM" style="@style/KeyStyle" android:text="M"/>
+        <TextView android:id="@+id/keyDel" style="@style/KeyStyle" android:text="DEL"/>
+
+    </LinearLayout>
+
+    <!-- Row 4: SPACE -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView android:id="@+id/keySpace" style="@style/KeyStyle" android:text="SPACE"/>
+
+    </LinearLayout>
+
+</LinearLayout>
