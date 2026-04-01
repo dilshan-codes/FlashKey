@@ -38,9 +38,10 @@ class FlashKeyService : InputMethodService() {
     // flash animation duration in milliseconds — change this anytime
     private val flashDuration = 600L
 
-    // corner radius in dp — one single value used everywhere
-    // change this anytime to make all keys more or less rounded
-    private val cornerRadiusDp = 8f
+    // corner radius in dp — separate values for letter/action keys and number keys
+    // change these anytime to adjust roundness
+    private val cornerRadiusDp = 8f        // letter and action keys
+    private val cornerRadiusNumberDp = 4f  // number row keys — matches key_background_number.xml
 
     // Android calls this automatically when the keyboard needs to appear on screen.
     override fun onCreateInputView(): View {
@@ -151,7 +152,8 @@ class FlashKeyService : InputMethodService() {
             keyView.setOnTouchListener { view, event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        flashKey(view, colorNumberKey)
+                        // pass cornerRadiusNumberDp so number keys fade back with correct radius
+                        flashKey(view, colorNumberKey, cornerRadiusNumberDp)
                         currentInputConnection?.commitText(label, 1)
                     }
                 }
@@ -159,11 +161,11 @@ class FlashKeyService : InputMethodService() {
             }
         }
 
-        // @ key
+        // @ key — same style as number keys
         keyboardView.findViewById<TextView>(R.id.keyAt).setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    flashKey(view, colorNumberKey)
+                    flashKey(view, colorNumberKey, cornerRadiusNumberDp)
                     currentInputConnection?.commitText("@", 1)
                 }
             }
@@ -327,11 +329,11 @@ class FlashKeyService : InputMethodService() {
     }
 
     // flashes a key with warm orange then fades back to its normal color
-    // cornerRadiusDp is defined at top of class — one value controls all keys
-    private fun flashKey(view: View, endColor: Int) {
-        // convert dp to pixels — this matches XML drawable radius exactly
+    // cornerDp defaults to cornerRadiusDp — pass cornerRadiusNumberDp for number keys
+    private fun flashKey(view: View, endColor: Int, cornerDp: Float = cornerRadiusDp) {
+        // convert dp to pixels — matches XML drawable radius exactly
         val cornerRadiusPx = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, cornerRadiusDp,
+            TypedValue.COMPLEX_UNIT_DIP, cornerDp,
             resources.displayMetrics
         )
 
