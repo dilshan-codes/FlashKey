@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.inputmethodservice.InputMethodService
 import android.os.Handler
 import android.os.Looper
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -39,6 +40,74 @@ class FlashKeyService : InputMethodService() {
     // Android calls this automatically when the keyboard needs to appear on screen.
     override fun onCreateInputView(): View {
         keyboardView = layoutInflater.inflate(R.layout.keyboard_view, null)
+
+        // wait for layout to be measured so we can get actual screen width
+        keyboardView!!.post {
+            val screenWidth = keyboardView!!.width
+
+            // each key has 3dp margin on each side = 6dp total per key
+            val marginDp = 6
+            val marginPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, marginDp.toFloat(),
+                resources.displayMetrics
+            ).toInt()
+
+            // letter key width = (screen width - total margins for 10 keys) / 10
+            val letterKeyWidth = (screenWidth - marginPx * 10) / 10
+
+            // letter key height = width * 1.5
+            // change the 1.5f multiplier here anytime to adjust key height
+            val letterKeyHeight = (letterKeyWidth * 1.5f).toInt()
+
+            // number key width = (screen width - total margins for 11 keys) / 11
+            val numberKeyWidth = (screenWidth - marginPx * 11) / 11
+
+            // number key height = width (square)
+            val numberKeyHeight = numberKeyWidth
+
+            // apply letter key size to all letter keys
+            val letterKeyIds = listOf(
+                R.id.keyQ, R.id.keyW, R.id.keyE, R.id.keyR, R.id.keyT,
+                R.id.keyY, R.id.keyU, R.id.keyI, R.id.keyO, R.id.keyP,
+                R.id.keyA, R.id.keyS, R.id.keyD, R.id.keyF, R.id.keyG,
+                R.id.keyH, R.id.keyJ, R.id.keyK, R.id.keyL, R.id.keyZ,
+                R.id.keyX, R.id.keyC, R.id.keyV, R.id.keyB, R.id.keyN,
+                R.id.keyM, R.id.keyComma, R.id.keyPeriod
+            )
+            for (id in letterKeyIds) {
+                val key = keyboardView!!.findViewById<TextView>(id)
+                val params = key.layoutParams
+                params.width = letterKeyWidth
+                params.height = letterKeyHeight
+                key.layoutParams = params
+            }
+
+            // apply action key height to match letter keys
+            val actionKeyIds = listOf(
+                R.id.keyShift, R.id.keyDel,
+                R.id.keySym, R.id.keySpace, R.id.keyEnter
+            )
+            for (id in actionKeyIds) {
+                val key = keyboardView!!.findViewById<TextView>(id)
+                val params = key.layoutParams
+                params.height = letterKeyHeight
+                key.layoutParams = params
+            }
+
+            // apply number key size — square
+            val numberKeyIds = listOf(
+                R.id.key1, R.id.key2, R.id.key3, R.id.key4, R.id.key5,
+                R.id.key6, R.id.key7, R.id.key8, R.id.key9, R.id.key0,
+                R.id.keyAt
+            )
+            for (id in numberKeyIds) {
+                val key = keyboardView!!.findViewById<TextView>(id)
+                val params = key.layoutParams
+                params.height = numberKeyHeight
+                key.layoutParams = params
+            }
+        }
+
         setupKeys(keyboardView!!)
         return keyboardView!!
     }
@@ -247,8 +316,12 @@ class FlashKeyService : InputMethodService() {
         // keep shift key color correct after labels update
         val shiftKey = keyboardView.findViewById<TextView>(R.id.keyShift)
         if (isUpperCase) {
+            val cornerRadiusPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 8f,
+                resources.displayMetrics
+            )
             val drawable = GradientDrawable()
-            drawable.cornerRadius = 24f
+            drawable.cornerRadius = cornerRadiusPx
             drawable.setColor(colorShiftActive)
             shiftKey.background = drawable
         }
@@ -258,12 +331,18 @@ class FlashKeyService : InputMethodService() {
     // endColor — pass the key's normal color so it fades back correctly
     // flashDuration — change the class variable at top to adjust speed
     private fun flashKey(view: View, endColor: Int) {
-        // use GradientDrawable to animate color while keeping rounded corners
+        // convert 8dp to pixels to match XML drawable corner radius exactly
+        val cornerRadiusPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, 8f,
+            resources.displayMetrics
+        )
+
         val drawable = GradientDrawable()
-        drawable.cornerRadius = 24f
+        drawable.cornerRadius = cornerRadiusPx
         drawable.setColor(colorFlashStart)
         view.background = drawable
 
+        // flashDuration is defined at top of class — change it anytime
         val animator = ValueAnimator.ofArgb(colorFlashStart, endColor)
         animator.duration = flashDuration
         animator.interpolator = DecelerateInterpolator()
