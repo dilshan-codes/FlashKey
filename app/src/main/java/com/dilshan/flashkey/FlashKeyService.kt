@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.inputmethodservice.InputMethodService
 import android.os.Handler
 import android.os.Looper
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -36,9 +37,64 @@ class FlashKeyService : InputMethodService() {
     // flash animation duration in milliseconds — change this anytime
     private val flashDuration = 600L
 
+    // corner radius in dp — one single value used everywhere
+    // change this anytime to make all keys more or less rounded
+    private val cornerRadiusDp = 8f
+
     // Android calls this automatically when the keyboard needs to appear on screen.
     override fun onCreateInputView(): View {
         keyboardView = layoutInflater.inflate(R.layout.keyboard_view, null)
+
+        keyboardView!!.post {
+            val screenWidth = keyboardView!!.width
+
+            // 6dp total margin per key (3dp on each side)
+            val marginPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 6f,
+                resources.displayMetrics
+            ).toInt()
+
+            // letter key width decided by row 1 — 10 keys sharing full width
+            val letterKeyWidth = (screenWidth - marginPx * 10) / 10
+
+            // letter key height = width * 1.5
+            // change 1.5f here anytime to adjust key height
+            val letterKeyHeight = (letterKeyWidth * 1.5f).toInt()
+
+            // number key width decided by row 0 — 11 keys sharing full width
+            val numberKeyWidth = (screenWidth - marginPx * 11) / 11
+
+            // number key height = width (square)
+            val numberKeyHeight = numberKeyWidth
+
+            // set height only — width is handled by layout_weight in XML
+            val letterKeyIds = listOf(
+                R.id.keyQ, R.id.keyW, R.id.keyE, R.id.keyR, R.id.keyT,
+                R.id.keyY, R.id.keyU, R.id.keyI, R.id.keyO, R.id.keyP,
+                R.id.keyA, R.id.keyS, R.id.keyD, R.id.keyF, R.id.keyG,
+                R.id.keyH, R.id.keyJ, R.id.keyK, R.id.keyL, R.id.keyZ,
+                R.id.keyX, R.id.keyC, R.id.keyV, R.id.keyB, R.id.keyN,
+                R.id.keyM, R.id.keyComma, R.id.keyPeriod,
+                R.id.keyShift, R.id.keyDel, R.id.keySym,
+                R.id.keySpace, R.id.keyEnter
+            )
+            for (id in letterKeyIds) {
+                keyboardView!!.findViewById<TextView>(id)
+                    .layoutParams.height = letterKeyHeight
+            }
+
+            // number keys — height only, square
+            val numberKeyIds = listOf(
+                R.id.key1, R.id.key2, R.id.key3, R.id.key4, R.id.key5,
+                R.id.key6, R.id.key7, R.id.key8, R.id.key9, R.id.key0,
+                R.id.keyAt
+            )
+            for (id in numberKeyIds) {
+                keyboardView!!.findViewById<TextView>(id)
+                    .layoutParams.height = numberKeyHeight
+            }
+        }
+
         setupKeys(keyboardView!!)
         return keyboardView!!
     }
@@ -58,9 +114,6 @@ class FlashKeyService : InputMethodService() {
             R.id.keyN to "n", R.id.keyM to "m"
         )
 
-        // loop through every letter key, attach a touch listener
-        // on press: flash the key and type the letter
-        // if shift is on, uppercase() converts "a" to "A" before typing
         for ((id, label) in letterKeys) {
             val keyView = keyboardView.findViewById<TextView>(id)
             keyView.setOnTouchListener { view, event ->
@@ -135,7 +188,6 @@ class FlashKeyService : InputMethodService() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     isUpperCase = !isUpperCase
-                    // flash then settle to correct color based on state
                     flashKey(view, if (isUpperCase) colorShiftActive else colorActionKey)
                     updateKeyLabels(keyboardView)
                 }
@@ -148,9 +200,7 @@ class FlashKeyService : InputMethodService() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     flashKey(view, colorActionKey)
-                    // delete one character immediately on first press
                     currentInputConnection?.deleteSurroundingText(1, 0)
-                    // after 400ms start repeating delete every 80ms
                     deleteRunnable = object : Runnable {
                         override fun run() {
                             currentInputConnection?.deleteSurroundingText(1, 0)
@@ -159,7 +209,6 @@ class FlashKeyService : InputMethodService() {
                     }
                     deleteHandler.postDelayed(deleteRunnable!!, 400)
                 }
-                // stop deleting when finger lifts
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     deleteRunnable?.let { deleteHandler.removeCallbacks(it) }
                     deleteRunnable = null
@@ -173,7 +222,6 @@ class FlashKeyService : InputMethodService() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     flashKey(view, colorActionKey)
-                    // symbols page coming in future version
                 }
             }
             true
@@ -196,9 +244,8 @@ class FlashKeyService : InputMethodService() {
         val imeAction = imeOptions.and(EditorInfo.IME_MASK_ACTION)
         val noEnterAction = imeOptions.and(EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0
 
-        // set label based on what the app needs
         val enterLabel = when {
-            noEnterAction -> "↵"
+            noEnterAction -> "ENT"
             imeAction == EditorInfo.IME_ACTION_SEARCH -> "🔍"
             imeAction == EditorInfo.IME_ACTION_SEND -> "SEND"
             imeAction == EditorInfo.IME_ACTION_DONE -> "DONE"
@@ -215,7 +262,6 @@ class FlashKeyService : InputMethodService() {
                     if (noEnterAction ||
                         imeAction == EditorInfo.IME_ACTION_NONE ||
                         imeAction == EditorInfo.IME_ACTION_UNSPECIFIED) {
-                        // type a real newline
                         currentInputConnection?.commitText("\n", 1)
                     } else {
                         currentInputConnection?.performEditorAction(imeAction)
@@ -247,23 +293,32 @@ class FlashKeyService : InputMethodService() {
         // keep shift key color correct after labels update
         val shiftKey = keyboardView.findViewById<TextView>(R.id.keyShift)
         if (isUpperCase) {
+            val cornerRadiusPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, cornerRadiusDp,
+                resources.displayMetrics
+            )
             val drawable = GradientDrawable()
-            drawable.cornerRadius = 24f
+            drawable.cornerRadius = cornerRadiusPx
             drawable.setColor(colorShiftActive)
             shiftKey.background = drawable
         }
     }
 
     // flashes a key with warm orange then fades back to its normal color
-    // endColor — pass the key's normal color so it fades back correctly
-    // flashDuration — change the class variable at top to adjust speed
+    // cornerRadiusDp is defined at top of class — one value controls all keys
     private fun flashKey(view: View, endColor: Int) {
-        // use GradientDrawable to animate color while keeping rounded corners
+        // convert dp to pixels — this matches XML drawable radius exactly
+        val cornerRadiusPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, cornerRadiusDp,
+            resources.displayMetrics
+        )
+
         val drawable = GradientDrawable()
-        drawable.cornerRadius = 24f
+        drawable.cornerRadius = cornerRadiusPx
         drawable.setColor(colorFlashStart)
         view.background = drawable
 
+        // flashDuration defined at top — change anytime
         val animator = ValueAnimator.ofArgb(colorFlashStart, endColor)
         animator.duration = flashDuration
         animator.interpolator = DecelerateInterpolator()
