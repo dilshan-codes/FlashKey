@@ -107,7 +107,7 @@ class FlashKeyService : InputMethodService() {
 
             // letter key height = width * 1.3
             // change 1.3f here anytime to adjust key height
-            val letterKeyHeight = (letterKeyWidth * 1.3f).toInt()
+            val letterKeyHeight = (letterKeyWidth * 1.2f).toInt()
 
             // number key width decided by row 0 — 11 keys sharing full width
             val numberKeyWidth = (screenWidth - marginPx * 11) / 11
