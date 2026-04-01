@@ -2,13 +2,6 @@
 
 <p>A lightweight, fast Android keyboard with a satisfying color flash animation on every keystroke.</p><br>
 
-https://github.com/user-attachments/assets/72b90af5-1c5a-49ec-8d10-3acffa6ef33b
-
-<br>
-<h3>✨ What is FlashKey?</h3>
-<p>FlashKey is a custom Android keyboard built from scratch with one goal, feel satisfying to type on. Every key press triggers an instant warm orange flash that smoothly fades back to gray, creating a beautiful cascading light effect as you type.
-No bloat. No AI suggestions. No cloud sync. Just a clean, fast keyboard that looks great and stays out of your way.</p><br>
-
 <div align="center">
   <img src="ss's/images/1.jpeg" width="22%"/>
   &nbsp;&nbsp;
@@ -18,6 +11,14 @@ No bloat. No AI suggestions. No cloud sync. Just a clean, fast keyboard that loo
   &nbsp;&nbsp;
   <img src="ss's/images/4.jpeg" width="22%"/>
 </div>
+
+<br>
+<h3>✨ What is FlashKey?</h3>
+<p>FlashKey is a custom Android keyboard built from scratch with one goal, feel satisfying to type on. Every key press triggers an instant warm orange flash that smoothly fades back to gray, creating a beautiful cascading light effect as you type.
+No bloat. No AI suggestions. No cloud sync. Just a clean, fast keyboard that looks great and stays out of your way.</p><br>
+
+
+https://github.com/user-attachments/assets/72b90af5-1c5a-49ec-8d10-3acffa6ef33b
 
 <br>
 <hr>
