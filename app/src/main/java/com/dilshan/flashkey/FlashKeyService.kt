@@ -31,6 +31,7 @@ class FlashKeyService : InputMethodService() {
     // color constants — change these anytime to update the whole keyboard feel
     private val colorLetterKey = 0xFF606060.toInt()    // normal letter key color
     private val colorActionKey = 0xFF383838.toInt()    // action key color (SHF, DEL, etc)
+    private val colorNumberKey = 0xFF484848.toInt()    // number key color
     private val colorFlashStart = 0xFFFFAA44.toInt()   // flash start color (warm orange)
     private val colorShiftActive = 0xFF4CAF50.toInt()  // shift key color when uppercase on
 
@@ -141,7 +142,7 @@ class FlashKeyService : InputMethodService() {
             keyView.setOnTouchListener { view, event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        flashKey(view, colorLetterKey)
+                        flashKey(view, colorNumberKey)
                         currentInputConnection?.commitText(label, 1)
                     }
                 }
@@ -153,7 +154,7 @@ class FlashKeyService : InputMethodService() {
         keyboardView.findViewById<TextView>(R.id.keyAt).setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    flashKey(view, colorLetterKey)
+                    flashKey(view, colorNumberKey)
                     currentInputConnection?.commitText("@", 1)
                 }
             }
