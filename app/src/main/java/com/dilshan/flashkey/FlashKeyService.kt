@@ -58,9 +58,9 @@ class FlashKeyService : InputMethodService() {
             // letter key width decided by row 1 — 10 keys sharing full width
             val letterKeyWidth = (screenWidth - marginPx * 10) / 10
 
-            // letter key height = width * 1.5
-            // change 1.5f here anytime to adjust key height
-            val letterKeyHeight = (letterKeyWidth * 1.5f).toInt()
+            // letter key height = width * 1.3
+            // change 1.3f here anytime to adjust key height
+            val letterKeyHeight = (letterKeyWidth * 1.3f).toInt()
 
             // number key width decided by row 0 — 11 keys sharing full width
             val numberKeyWidth = (screenWidth - marginPx * 11) / 11
@@ -100,6 +100,12 @@ class FlashKeyService : InputMethodService() {
         return keyboardView!!
     }
 
+    // called every time keyboard appears in any app — refreshes enter key
+    override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
+        super.onStartInputView(info, restarting)
+        keyboardView?.let { updateEnterKey(it) }
+    }
+
     private fun setupKeys(keyboardView: View) {
 
         // list of all letter keys — each pair is (view id, lowercase letter)
@@ -115,6 +121,9 @@ class FlashKeyService : InputMethodService() {
             R.id.keyN to "n", R.id.keyM to "m"
         )
 
+        // loop through every letter key, attach a touch listener
+        // on press: flash the key and type the letter
+        // if shift is on, uppercase() converts "a" to "A" before typing
         for ((id, label) in letterKeys) {
             val keyView = keyboardView.findViewById<TextView>(id)
             keyView.setOnTouchListener { view, event ->
@@ -201,7 +210,9 @@ class FlashKeyService : InputMethodService() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     flashKey(view, colorActionKey)
+                    // delete one character immediately on first press
                     currentInputConnection?.deleteSurroundingText(1, 0)
+                    // after 400ms start repeating delete every 80ms
                     deleteRunnable = object : Runnable {
                         override fun run() {
                             currentInputConnection?.deleteSurroundingText(1, 0)
@@ -210,6 +221,7 @@ class FlashKeyService : InputMethodService() {
                     }
                     deleteHandler.postDelayed(deleteRunnable!!, 400)
                 }
+                // stop deleting when finger lifts
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     deleteRunnable?.let { deleteHandler.removeCallbacks(it) }
                     deleteRunnable = null
@@ -239,12 +251,19 @@ class FlashKeyService : InputMethodService() {
             true
         }
 
-        // ENTER key — reads the app's IME action and performs it
+        // enter key is handled by updateEnterKey() which refreshes on every app switch
+        updateEnterKey(keyboardView)
+    }
+
+    // updates enter key label and action based on what the current app needs
+    // called every time keyboard shows in a new app via onStartInputView
+    private fun updateEnterKey(keyboardView: View) {
         val enterKey = keyboardView.findViewById<TextView>(R.id.keyEnter)
         val imeOptions = currentInputEditorInfo?.imeOptions ?: 0
         val imeAction = imeOptions.and(EditorInfo.IME_MASK_ACTION)
         val noEnterAction = imeOptions.and(EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0
 
+        // set label based on what the app needs
         val enterLabel = when {
             noEnterAction -> "ENT"
             imeAction == EditorInfo.IME_ACTION_SEARCH -> "🔍"
@@ -256,6 +275,7 @@ class FlashKeyService : InputMethodService() {
         }
         enterKey.text = enterLabel
 
+        // update touch listener with fresh IME action for current app
         enterKey.setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -263,6 +283,7 @@ class FlashKeyService : InputMethodService() {
                     if (noEnterAction ||
                         imeAction == EditorInfo.IME_ACTION_NONE ||
                         imeAction == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                        // type a real newline
                         currentInputConnection?.commitText("\n", 1)
                     } else {
                         currentInputConnection?.performEditorAction(imeAction)
