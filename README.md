@@ -25,7 +25,7 @@ https://github.com/user-attachments/assets/72b90af5-1c5a-49ec-8d10-3acffa6ef33b
 <hr>
 
 <h3>✨ What is FlashKey?</h3>
-<p>FlashKey is a custom Android keyboard built from scratch with one goal — feel satisfying to type on. Every key press triggers an instant warm orange flash that smoothly fades back to gray, creating a beautiful cascading light effect as you type.</p>
+<p>FlashKey is a custom Android keyboard built for one goal - feel satisfying to type on. Every key press triggers an instant warm orange flash that smoothly fades back to gray, creating a beautiful cascading light effect as you type.</p>
 <p>No bloat. No AI suggestions. No cloud sync. Just a clean, fast keyboard that looks great and stays out of your way.</p>
 
 <br>
